@@ -17,6 +17,7 @@
         remote_src: no
 
     - name: Stop existing Nginx service if running
+      become: yes
       service:
         name: nginx
         state: stopped
@@ -29,6 +30,7 @@
 
   handlers:
     - name: Restart Nginx
+      become: yes
       service:
         name: nginx
         state: restarted
