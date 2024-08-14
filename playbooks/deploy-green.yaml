@@ -1,20 +1,30 @@
----
 - hosts: green
   become: yes
   vars:
     artifacts_path: "{{ lookup('env', 'WORKSPACE') }}/nginx-artifacts.tar.gz"
     nginx_dest: "/var/lib/nginx"
+    temp_dir: "/tmp/nginx-build"
   tasks:
     - name: Ensure the destination directory exists
       file:
         path: "{{ nginx_dest }}"
         state: directory
 
-    - name: Upload Nginx artifacts
+    - name: Ensure the temporary directory exists
+      file:
+        path: "{{ temp_dir }}"
+        state: directory
+
+    - name: Upload Nginx artifacts to temporary directory
       unarchive:
         src: "{{ artifacts_path }}"
-        dest: "{{ nginx_dest }}"
+        dest: "{{ temp_dir }}"
         remote_src: no
+
+    - name: Build and install Nginx
+      command: ./configure && make && make install
+      args:
+        chdir: "{{ temp_dir }}"
 
     - name: Stop existing Nginx service if running
       become: yes
@@ -24,10 +34,14 @@
 
     - name: Start new Nginx service
       service:
-        pattern: "{{ nginx_dest }}/objs/nginx"
         name: nginx
         state: started
       notify: Restart Nginx
+
+    - name: Clean up temporary directory
+      file:
+        path: "{{ temp_dir }}"
+        state: absent
 
   handlers:
     - name: Restart Nginx
