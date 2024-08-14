@@ -1,0 +1,23 @@
+---
+- hosts: green
+  become: yes
+  tasks:
+    - name: Stop current Nginx service
+      service:
+        name: nginx
+        state: stopped
+
+    - name: Restore previous Nginx artifacts
+      unarchive:
+        src: "{{ lookup('env', 'WORKSPACE') }}/previous/nginx-artifacts.tar.gz"
+        dest: "/var/lib/nginx"
+        remote_src: no
+
+    - name: Start previous Nginx service
+      service:
+        name: nginx
+        state: started
+
+    - name: Switch traffic back to Blue
+      ansible.builtin.include_role:
+        name: switch-to-blue
