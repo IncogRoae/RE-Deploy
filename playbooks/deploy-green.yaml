@@ -17,6 +17,7 @@
         remote_src: no
 
     - name: Stop existing Nginx service if running
+      become: yes
       command: systemctl stop nginx
       ignore_errors: yes
 
@@ -28,4 +29,5 @@
 
   handlers:
     - name: Restart Nginx
+      become: yes
       command: systemctl restart nginx
