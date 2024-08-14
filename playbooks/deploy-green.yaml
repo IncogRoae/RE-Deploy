@@ -23,9 +23,10 @@
         state: stopped
 
     - name: Start new Nginx service
-      command: "{{ nginx_dest }}/objs/nginx"
-      args:
-        chdir: "{{ nginx_dest }}"
+      service:
+        pattern: "{{ nginx_dest }}/objs/nginx"
+        name: nginx
+        state: started
       notify: Restart Nginx
 
   handlers:
