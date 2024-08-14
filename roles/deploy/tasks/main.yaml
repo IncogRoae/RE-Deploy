@@ -1,3 +1,15 @@
+- name: Wait for the new container to be ready
+  uri:
+    url: "http://localhost:{{ (new_env == 'green') | ternary('8081', '8080') }}/health"
+    status_code: 200
+    timeout: 30
+    retries: 10
+    delay: 5
+  register: result
+  until: result.status == 200
+  tags:
+    - check-new-container
+
 - name: Update Nginx configuration to point to the new environment
   lineinfile:
     path: "{{ nginx_conf_path }}"
@@ -6,9 +18,13 @@
     owner: root
     group: root
     mode: '0644'
+  tags:
+    - update-nginx
 
 - name: Reload Nginx to apply the new configuration
   command: "nginx -s reload"
+  tags:
+    - nginx-reload
 
 - name: Deploy the new container
   docker_container:
@@ -17,11 +33,17 @@
     state: started
     published_ports:
       - "{{ (new_env == 'green') | ternary('8081:80', '8080:80') }}"
+  tags:
+    - deploy
 
 - name: Stop and remove the old container
   docker_container:
     name: "{{ current_env }}_server"
     state: absent
+  tags:
+    - cleanup
 
 - name: Reload Nginx to apply the new configuration
   command: "nginx -s reload"
+  tags:
+    - nginx-reload
