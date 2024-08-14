@@ -19,7 +19,7 @@
     - name: Stop existing Nginx service if running
       service:
         name: nginx
-        state: stop
+        state: stopped
 
     - name: Start new Nginx service
       command: "{{ nginx_dest }}/objs/nginx"
@@ -31,4 +31,4 @@
     - name: Restart Nginx
       service:
         name: nginx
-        state: restart
+        state: restarted
