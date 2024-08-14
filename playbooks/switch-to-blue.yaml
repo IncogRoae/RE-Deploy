@@ -1,7 +1,7 @@
 - hosts: loadbalancer
   become: yes
   tasks:
-    - name: Switch traffic to Blue environment
+    - name: Switch traffic to Blue
       template:
         src: templates/nginx-blue.conf
         dest: /etc/nginx/nginx.conf
