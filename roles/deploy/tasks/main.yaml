@@ -1,0 +1,27 @@
+- name: Update Nginx configuration to point to the new environment
+  lineinfile:
+    path: "{{ nginx_conf_path }}"
+    regexp: 'proxy_pass http://localhost:.*;'
+    line: "proxy_pass http://localhost:{{ (new_env == 'green') | ternary('8081', '8080') }};"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload Nginx to apply the new configuration
+  command: "nginx -s reload"
+
+- name: Deploy the new container
+  docker_container:
+    name: "{{ new_env }}_server"
+    image: "{{ docker_registry }}/{{ docker_image }}:latest"
+    state: started
+    published_ports:
+      - "{{ (new_env == 'green') | ternary('8081:80', '8080:80') }}"
+
+- name: Stop and remove the old container
+  docker_container:
+    name: "{{ current_env }}_server"
+    state: absent
+
+- name: Reload Nginx to apply the new configuration
+  command: "nginx -s reload"

@@ -1,0 +1,5 @@
+docker_registry: "novitative"
+docker_image: "re-webserver"
+nginx_conf_path: "/etc/nginx/conf.d/default.conf"
+current_env: "green"
+new_env: "blue"
