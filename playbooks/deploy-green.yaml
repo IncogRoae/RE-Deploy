@@ -17,20 +17,14 @@
         remote_src: no
 
     - name: Stop existing Nginx service if running
-      service:
-        name: nginx
-        state: stopped
-        enabled: no
+      command: systemctl stop nginx
       ignore_errors: yes
 
     - name: Start new Nginx service
       command: "{{ nginx_dest }}/objs/nginx"
       args:
         chdir: "{{ nginx_dest }}"
-      notify: Restart Nginx
 
   handlers:
     - name: Restart Nginx
-      service:
-        name: nginx
-        state: restarted
+      command: systemctl restart nginx
