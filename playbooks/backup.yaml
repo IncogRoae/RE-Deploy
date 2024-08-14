@@ -2,6 +2,7 @@
   become: yes
   tasks:
     - name: Create a backup
+      become: yes
       shell: tar -czvf /tmp/nginx-backup.tar.gz -C /var/lib/nginx .
 
     - name: Fetch the backup
