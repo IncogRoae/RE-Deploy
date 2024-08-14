@@ -15,7 +15,7 @@
         dest: "{{ nginx_dest }}"
         remote_src: no
 
-    - name: Stop existing Nginx service if running
+    - name: Stop existing Nginx
       become: yes
       service:
         name: nginx
