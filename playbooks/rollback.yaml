@@ -17,6 +17,4 @@
         name: nginx
         state: started
 
-    - name: Switch traffic back to Blue
-      include_role:
-        name: switch-to-blue
+- import_playbook: playbooks/switch-to-blue.yaml
