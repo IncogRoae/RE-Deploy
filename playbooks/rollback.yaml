@@ -17,4 +17,4 @@
         name: nginx
         state: started
 
-- import_playbook: playbooks/switch-to-blue.yaml
+- import_playbook: switch-to-blue.yaml
