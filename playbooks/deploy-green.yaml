@@ -21,10 +21,10 @@
         dest: "{{ temp_dir }}"
         remote_src: no
 
-    - name: Build and install Nginx
+    - name: Configure, make, and install Nginx
       command: ./configure && make && make install
       args:
-        chdir: "{{ temp_dir }}"
+        chdir: "{{ temp_dir }}/nginx"
 
     - name: Stop existing Nginx service if running
       become: yes
