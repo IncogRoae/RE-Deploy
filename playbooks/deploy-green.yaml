@@ -14,7 +14,7 @@
       unarchive:
         src: "{{ artifacts_path }}"
         dest: "{{ nginx_dest }}"
-        remote_src: yes
+        remote_src: no
 
     - name: Stop existing Nginx service if running
       service:
