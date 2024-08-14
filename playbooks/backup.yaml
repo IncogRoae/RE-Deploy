@@ -1,0 +1,16 @@
+- hosts: green
+  become: yes
+  tasks:
+    - name: Create a backup
+      shell: tar -czvf /tmp/nginx-backup.tar.gz -C /var/lib/nginx .
+
+    - name: Fetch the backup
+      fetch:
+        src: /tmp/nginx-backup.tar.gz
+        dest: "{{ lookup('env', 'WORKSPACE') }}/previous/nginx-artifacts.tar.gz"
+        flat: yes
+
+    - name: Clean up the backup
+      file:
+        path: /tmp/nginx-backup.tar.gz
+        state: absent
