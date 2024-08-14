@@ -18,5 +18,5 @@
         state: started
 
     - name: Switch traffic back to Blue
-      ansible.builtin.include_role:
+      include_role:
         name: switch-to-blue
