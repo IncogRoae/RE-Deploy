@@ -2,7 +2,7 @@
 - hosts: green
   become: yes
   vars:
-    artifacts_path: "${WORKSPACE}/nginx-artifacts.tar.gz"
+    artifacts_path: "{{ lookup('env', 'WORKSPACE') }}/nginx-artifacts.tar.gz"
     nginx_dest: "/var/lib/nginx"
   tasks:
     - name: Ensure the destination directory exists
