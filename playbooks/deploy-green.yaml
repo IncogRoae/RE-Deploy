@@ -1,0 +1,36 @@
+---
+- hosts: green
+  become: yes
+  vars:
+    artifacts_path: "/path/to/nginx-artifacts.tar.gz"
+    nginx_dest: "/usr/local/nginx"
+  tasks:
+    - name: Ensure the destination directory exists
+      file:
+        path: "{{ nginx_dest }}"
+        state: directory
+
+    - name: Upload Nginx artifacts
+      unarchive:
+        src: "{{ artifacts_path }}"
+        dest: "{{ nginx_dest }}"
+        remote_src: yes
+
+    - name: Stop existing Nginx service if running
+      service:
+        name: nginx
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Start new Nginx service
+      command: "{{ nginx_dest }}/objs/nginx"
+      args:
+        chdir: "{{ nginx_dest }}"
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
