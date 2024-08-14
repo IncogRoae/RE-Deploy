@@ -3,15 +3,15 @@
   tasks:
     - name: Create a backup
       become: yes
-      shell: tar -czvf /tmp/nginx-backup.tar.gz -C /var/lib/nginx .
+      shell: tar -czvf /var/backups/nginx-backup.tar.gz -C /var/lib/nginx .
 
     - name: Fetch the backup
       fetch:
-        src: /tmp/nginx-backup.tar.gz
+        src: //var/backups/nginx-backup.tar.gz
         dest: "{{ lookup('env', 'WORKSPACE') }}/previous/nginx-artifacts.tar.gz"
         flat: yes
 
     - name: Clean up the backup
       file:
-        path: /tmp/nginx-backup.tar.gz
+        path: /var/backups//nginx-backup.tar.gz
         state: absent
